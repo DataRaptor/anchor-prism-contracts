@@ -1,5 +1,6 @@
 import {
   cancelPurchaseInstruction,
+  createProductInstruction,
   deliverProductInstruction,
   purchaseProductInstruction,
   refundPurchaseInstruction,
@@ -11,6 +12,7 @@ import { generateOrderId, generateProductId } from "./utils";
 
 export {
   cancelPurchaseInstruction,
+  createProductInstruction,
   deliverProductInstruction,
   purchaseProductInstruction,
   refundPurchaseInstruction,
@@ -18,5 +20,5 @@ export {
   getProductEscrowPDA,
   getTokenVaultPDA,
   generateOrderId,
-  generateProductId
+  generateProductId,
 };

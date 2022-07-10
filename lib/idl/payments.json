@@ -31,50 +31,78 @@
           "isSigner": false
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "createProduct",
-      "accounts": [
-        {
           "name": "product",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "currency",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "merchantTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "merchant",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "systemProgram",
+          "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
         }
       ],
       "args": [
         {
+          "name": "productId",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "createProduct",
+      "accounts": [
+        {
+          "name": "merchant",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "merchantReceiveTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "product",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "productId",
+          "type": "u64"
+        },
+        {
           "name": "price",
           "type": "u64"
         },
         {
-          "name": "inventory",
-          "type": "u64"
+          "name": "cancellable",
+          "type": "bool"
+        },
+        {
+          "name": "bump",
+          "type": "u8"
         }
       ]
     },
@@ -102,6 +130,11 @@
           "isSigner": false
         },
         {
+          "name": "product",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "vaultAccount",
           "isMut": true,
           "isSigner": false
@@ -117,11 +150,26 @@
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "productId",
+          "type": "u64"
+        }
+      ]
     },
     {
       "name": "purchaseProduct",
       "accounts": [
+        {
+          "name": "merchant",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "merchantReceiveTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
         {
           "name": "customer",
           "isMut": true,
@@ -143,12 +191,12 @@
           "isSigner": false
         },
         {
-          "name": "product",
+          "name": "productEscrow",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "productEscrow",
+          "name": "product",
           "isMut": true,
           "isSigner": false
         },
@@ -169,6 +217,18 @@
         }
       ],
       "args": [
+        {
+          "name": "orderId",
+          "type": "u64"
+        },
+        {
+          "name": "productId",
+          "type": "u64"
+        },
+        {
+          "name": "price",
+          "type": "u64"
+        },
         {
           "name": "vaultAccountBump",
           "type": "u8"
@@ -204,12 +264,22 @@
           "isSigner": false
         },
         {
+          "name": "product",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "productId",
+          "type": "u64"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -219,8 +289,12 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "product",
-            "type": "publicKey"
+            "name": "productId",
+            "type": "u64"
+          },
+          {
+            "name": "orderId",
+            "type": "u64"
           },
           {
             "name": "merchant",
@@ -267,19 +341,19 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "active",
-            "type": "bool"
-          },
-          {
-            "name": "currency",
-            "type": "publicKey"
+            "name": "productId",
+            "type": "u64"
           },
           {
             "name": "merchant",
             "type": "publicKey"
           },
           {
-            "name": "merchantTokenAccount",
+            "name": "merchantReceiveTokenAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "mint",
             "type": "publicKey"
           },
           {
@@ -287,8 +361,8 @@
             "type": "u64"
           },
           {
-            "name": "inventory",
-            "type": "u64"
+            "name": "cancellable",
+            "type": "bool"
           },
           {
             "name": "bump",

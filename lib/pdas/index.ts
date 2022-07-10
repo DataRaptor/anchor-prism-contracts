@@ -7,24 +7,25 @@ const getProductEscrowPDA = async (
 ): Promise<[PublicKey, number]> => {
   let [productEscrowPDA, productEscrowBump] =
     await anchor.web3.PublicKey.findProgramAddress(
-      [
-        Buffer.from(anchor.utils.bytes.utf8.encode("product-escrow")),
-        // Buffer.from(anchor.utils.bytes.utf8.encode(productUuid))
-      ],
+      [Buffer.from(anchor.utils.bytes.utf8.encode("product-escrow"))],
       program.programId
     );
   return [productEscrowPDA, productEscrowBump];
 };
 
-const getProductPDA = async (program: any, productId: number) => {
-  let [productPDA, _] = await anchor.web3.PublicKey.findProgramAddress(
-    [
-      Buffer.from(anchor.utils.bytes.utf8.encode("product")),
-      Buffer.from(anchor.utils.bytes.utf8.encode(productId.toString())),
-    ],
-    program.programId
-  );
-  return productPDA;
+const getProductPDA = async (
+  program: any,
+  productId: number
+): Promise<[PublicKey, number]> => {
+  let [productPDA, productBump] =
+    await anchor.web3.PublicKey.findProgramAddress(
+      [
+        Buffer.from(anchor.utils.bytes.utf8.encode("product")),
+        Buffer.from(anchor.utils.bytes.utf8.encode(productId.toString())),
+      ],
+      program.programId
+    );
+  return [productPDA, productBump];
 };
 
 const getTokenVaultPDA = async (

@@ -4,55 +4,68 @@ import { TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 
 const cancelPurchaseInstruction = async (
   program: any,
+  productId: number,
+  productPDA: PublicKey,
   vaultAccountPDA: PublicKey,
   vaultAuthorityPDA: PublicKey,
   customerMainAccount: Keypair,
   customerTokenAccount: PublicKey,
   productEscrow: Keypair
 ): Promise<string> => {
-  const signature: string = await program.rpc.cancelPurchase({
-    accounts: {
-      customer: customerMainAccount.publicKey,
-      customerDepositTokenAccount: customerTokenAccount,
-      vaultAccount: vaultAccountPDA,
-      vaultAuthority: vaultAuthorityPDA,
-      productEscrow: productEscrow.publicKey,
-      tokenProgram: TOKEN_PROGRAM_ID,
-    },
-    signers: [customerMainAccount],
-  });
+  const signature: string = await program.rpc.cancelPurchase(
+    new anchor.BN(productId),
+    {
+      accounts: {
+        product: productPDA,
+        customer: customerMainAccount.publicKey,
+        customerDepositTokenAccount: customerTokenAccount,
+        vaultAccount: vaultAccountPDA,
+        vaultAuthority: vaultAuthorityPDA,
+        productEscrow: productEscrow.publicKey,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      },
+      signers: [customerMainAccount],
+    }
+  );
   return signature;
 };
 
-// export const createProductInstruction = async (
-//   program: any,
-//   productId: number,
-//   price: number,
-//   inventory: number,
-//   productPDA: PublicKey,
-//   currency: PublicKey,
-//   merchantTokenAccount: PublicKey,
-//   merchant: Keypair
-// ): Promise<string> => {
-//   const signature: string = await program.methods
-//     .createProduct(
-//       new anchor.BN(productId),
-//       new anchor.BN(price),
-//       new anchor.BN(inventory),
-//     )
-//     .accounts({
-//         product: productPDA,
-//         currency: currency,
-//         merchantTokenAccount: merchantTokenAccount,
-//         merchant: merchant.publicKey,
-//     })
-//     .signers([merchant])
-//     .rpc()
-//   return signature
-// }
+export const createProductInstruction = async (
+  program: any,
+  treasury: PublicKey,
+  productId: number,
+  price: number,
+  cancellable: boolean,
+  productPDA: PublicKey,
+  productBump: number,
+  mint: PublicKey,
+  merchantReceiveTokenAccount: PublicKey,
+  merchant: Keypair
+): Promise<string> => {
+
+  const signature: string = await program.methods
+    .createProduct(
+      new anchor.BN(productId),
+      new anchor.BN(price),
+      cancellable,
+      productBump
+    )
+    .accounts({
+      treasury: treasury,
+      product: productPDA,
+      mint: mint,
+      merchantReceiveTokenAccount: merchantReceiveTokenAccount,
+      merchant: merchant.publicKey,
+    })
+    .signers([merchant])
+    .rpc();
+  return signature;
+};
 
 const deliverProductInstruction = async (
   program: any,
+  productId: number,
+  productPDA: PublicKey,
   vaultAccountPDA: PublicKey,
   vaultAuthorityPDA: PublicKey,
   merchantMainAccount: Keypair,
@@ -60,18 +73,22 @@ const deliverProductInstruction = async (
   customerMainAccount: Keypair,
   productEscrow: Keypair
 ): Promise<string> => {
-  const signature: string = await program.rpc.deliverProduct({
-    accounts: {
-      merchant: merchantMainAccount.publicKey,
-      merchantReceiveTokenAccount: merchantTokenAccount,
-      customer: customerMainAccount.publicKey,
-      productEscrow: productEscrow.publicKey,
-      vaultAccount: vaultAccountPDA,
-      vaultAuthority: vaultAuthorityPDA,
-      tokenProgram: TOKEN_PROGRAM_ID,
-    },
-    signers: [merchantMainAccount],
-  });
+  const signature: string = await program.rpc.deliverProduct(
+    new anchor.BN(productId),
+    {
+      accounts: {
+        product: productPDA,
+        merchant: merchantMainAccount.publicKey,
+        merchantReceiveTokenAccount: merchantTokenAccount,
+        customer: customerMainAccount.publicKey,
+        productEscrow: productEscrow.publicKey,
+        vaultAccount: vaultAccountPDA,
+        vaultAuthority: vaultAuthorityPDA,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      },
+      signers: [merchantMainAccount],
+    }
+  );
   return signature;
 };
 
@@ -79,6 +96,7 @@ const purchaseProductInstruction = async (
   program: any,
   orderId: number,
   productId: number,
+  productPDA: PublicKey,
   price: number,
   vaultAccountPDA: PublicKey,
   vaultAccountBump: number,
@@ -96,6 +114,7 @@ const purchaseProductInstruction = async (
     vaultAccountBump,
     {
       accounts: {
+        product: productPDA,
         customer: customerMainAccount.publicKey,
         mint: mint.publicKey,
         vaultAccount: vaultAccountPDA,
@@ -118,23 +137,29 @@ const purchaseProductInstruction = async (
 
 const refundPurchaseInstruction = async (
   program: any,
+  productId: number,
+  productPDA: PublicKey,
   vaultAccountPDA: PublicKey,
   vaultAuthorityPDA: PublicKey,
   customerMainAccount: Keypair,
   customerTokenAccount: PublicKey,
   productEscrow: Keypair
 ): Promise<string> => {
-  const signature: string = await program.rpc.refundPurchase({
-    accounts: {
-      customer: customerMainAccount.publicKey,
-      customerDepositTokenAccount: customerTokenAccount,
-      vaultAccount: vaultAccountPDA,
-      vaultAuthority: vaultAuthorityPDA,
-      productEscrow: productEscrow.publicKey,
-      tokenProgram: TOKEN_PROGRAM_ID,
-    },
-    signers: [customerMainAccount],
-  });
+  const signature: string = await program.rpc.refundPurchase(
+    new anchor.BN(productId),
+    {
+      accounts: {
+        product: productPDA,
+        customer: customerMainAccount.publicKey,
+        customerDepositTokenAccount: customerTokenAccount,
+        vaultAccount: vaultAccountPDA,
+        vaultAuthority: vaultAuthorityPDA,
+        productEscrow: productEscrow.publicKey,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      },
+      signers: [customerMainAccount],
+    }
+  );
   return signature;
 };
 

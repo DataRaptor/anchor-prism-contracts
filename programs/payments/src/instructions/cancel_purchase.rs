@@ -1,8 +1,9 @@
 use crate::state::product_escrow::*;
+use crate::state::product::*;
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, CloseAccount, TokenAccount, Transfer};
 
-pub fn cancel_purchase(ctx: Context<CancelPurchase>) -> Result<()> {
+pub fn cancel_purchase(ctx: Context<CancelPurchase>, _product_id: u64) -> Result<()> {
     // assert_eq!(ctx.accounts.product_escrow.delivered, false);
     let (_vault_authority, vault_authority_bump) =
         Pubkey::find_program_address(&[b"product-escrow"], ctx.program_id);
@@ -23,6 +24,7 @@ pub fn cancel_purchase(ctx: Context<CancelPurchase>) -> Result<()> {
 }
 
 #[derive(Accounts)]
+#[instruction(product_id: u64)]
 pub struct CancelPurchase<'info> {
     /// CHECK: This is not dangerous because we don't read or write from this account
     #[account(
@@ -44,6 +46,9 @@ pub struct CancelPurchase<'info> {
     pub customer_deposit_token_account: Account<'info, TokenAccount>,
     #[account(
         mut,
+        constraint = product_escrow.product_id == product_id,
+        constraint = product_escrow.merchant == product.merchant,
+        constraint = product_escrow.currency == product.mint,
         constraint = product_escrow.customer == *customer.key,
         constraint = product_escrow.customer == product_escrow.customer,
         constraint = product_escrow.delivered == false,
@@ -51,6 +56,18 @@ pub struct CancelPurchase<'info> {
         constraint = product_escrow.refunded == false
     )]
     pub product_escrow: Box<Account<'info, ProductEscrow>>,
+    #[account(
+        mut,
+        seeds = [
+            b"product",
+            product_id.to_string().as_ref(),
+        ],
+        bump = product.bump,
+        constraint = product.merchant == product_escrow.merchant,
+        constraint = product.mint == product_escrow.currency,
+        constraint = product.cancellable == true,
+    )]
+    pub product: Box<Account<'info, Product>>,
     /// CHECK: This is not dangerous because we don't read or write from this account
     pub token_program: AccountInfo<'info>,
 }

@@ -1,4 +1,5 @@
 use crate::state::product_escrow::*;
+use crate::state::product::*;
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, SetAuthority, TokenAccount, Transfer};
 use spl_token::instruction::AuthorityType;
@@ -7,17 +8,17 @@ pub fn purchase_product(
     ctx: Context<PurchaseProduct>,
     order_id: u64,
     product_id: u64,
-    price: u64,
+    _price: u64,
     _vault_account_bump: u8) -> Result<()> {
     ctx.accounts.product_escrow.create(
         product_id,
         order_id,
-        ctx.accounts.merchant.key(),
-        ctx.accounts.merchant_receive_token_account.key(),
+        ctx.accounts.product.merchant,
+        ctx.accounts.product.merchant_receive_token_account,
         ctx.accounts.customer.key(),
         ctx.accounts.customer_deposit_token_account.key(),
-        ctx.accounts.mint.key(),
-        price
+        ctx.accounts.product.mint,
+        ctx.accounts.product.price,
     )?;
     let (vault_authority, _vault_authority_bump) =
         Pubkey::find_program_address(&[b"product-escrow"], ctx.program_id);
@@ -28,7 +29,7 @@ pub fn purchase_product(
     )?;
     token::transfer(
         ctx.accounts.into_transfer_from_customer_to_vault_context(),
-        ctx.accounts.product_escrow.amount,
+        ctx.accounts.product.price,
     )?;
     Ok(())
 }
@@ -75,6 +76,18 @@ pub struct PurchaseProduct<'info> {
     pub customer_deposit_token_account: Account<'info, TokenAccount>,
     #[account(zero)]
     pub product_escrow: Box<Account<'info, ProductEscrow>>,
+    #[account(
+        mut,
+        seeds = [
+            b"product",
+            product_id.to_string().as_ref(),
+        ],
+        bump = product.bump,
+        constraint = product.price == price,
+        constraint = product.mint == mint.key(),
+        constraint = product.merchant == *merchant.key,
+    )]
+    pub product: Box<Account<'info, Product>>,
     /// CHECK: This is not dangerous because we don't read or write from this account
     pub system_program: AccountInfo<'info>,
     pub rent: Sysvar<'info, Rent>,

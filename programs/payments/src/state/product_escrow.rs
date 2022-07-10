@@ -12,7 +12,7 @@ pub struct ProductEscrow {
     pub amount: u64,
     pub delivered: bool,
     pub cancelled: bool,
-    pub refunded: bool,
+    pub refunded: bool
 }
 
 impl ProductEscrow {
@@ -57,5 +57,5 @@ impl ProductEscrow {
         Ok(())
     }
 
-}
+} 
 
