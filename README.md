@@ -1,11 +1,13 @@
 <br/> <p align="center"> <a> <img src="https://avatars.githubusercontent.com/u/103419525?v=4" width="100"/> 
 </a> </p> <h1 align="center">  </h1> <br/> <br/> 
 
-# 🌈 V1 anchor-prism-contracts
+# 🦉 V1 anchor-prism-contracts
 
 ## Overview
 
-The following repo contains Prism's V1 payments escrow contracts.
+Prism provides is a decentralized payments infrastructure. 
+
+This repo contains Prism's V1 payments escrow contracts.
 
 
 ## Program IDL
