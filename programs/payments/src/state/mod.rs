@@ -1,5 +1,5 @@
-pub use product_escrow::*;
+pub use payment::*;
 pub use product::*;
 
-pub mod product_escrow;
+pub mod payment;
 pub mod product;

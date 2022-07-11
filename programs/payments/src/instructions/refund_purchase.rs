@@ -1,36 +1,36 @@
-use crate::state::product_escrow::*;
+use crate::state::payment::*;
 use crate::state::product::*;
 use anchor_lang::prelude::*;
 use crate::events::refund_purchase_event;
 use anchor_spl::token::{self, CloseAccount, TokenAccount, Transfer};
 
 pub fn refund_purchase(ctx: Context<RefundPurchase>, _product_id: u64) -> Result<()> {
-    let (_vault_authority, vault_authority_bump) = Pubkey::find_program_address(&[b"product-escrow"], ctx.program_id);
-    let authority_seeds = &[&b"product-escrow"[..], &[vault_authority_bump]];
+    let (_vault_authority, vault_authority_bump) = Pubkey::find_program_address(&[b"payment"], ctx.program_id);
+    let authority_seeds = &[&b"payment"[..], &[vault_authority_bump]];
     token::transfer(
         ctx.accounts
             .into_transfer_from_vault_to_customer_context()
             .with_signer(&[&authority_seeds[..]]),
-        ctx.accounts.product_escrow.amount,
+        ctx.accounts.payment.amount,
     )?;
     token::close_account(
         ctx.accounts
             .into_close_context()
             .with_signer(&[&authority_seeds[..]]),
     )?;
-    ctx.accounts.product_escrow.refunded = true;
+    ctx.accounts.payment.refunded = true;
     refund_purchase_event::emit(
-        ctx.accounts.product_escrow.product_id,
-        ctx.accounts.product_escrow.order_id,
-        ctx.accounts.product_escrow.merchant,
-        ctx.accounts.product_escrow.merchant_receive_token_account,
-        ctx.accounts.product_escrow.customer,
-        ctx.accounts.product_escrow.customer_deposit_token_account,
-        ctx.accounts.product_escrow.currency,
-        ctx.accounts.product_escrow.amount,
-        ctx.accounts.product_escrow.delivered,
-        ctx.accounts.product_escrow.cancelled,
-        ctx.accounts.product_escrow.refunded,
+        ctx.accounts.payment.product_id,
+        ctx.accounts.payment.order_id,
+        ctx.accounts.payment.merchant,
+        ctx.accounts.payment.merchant_receive_token_account,
+        ctx.accounts.payment.customer,
+        ctx.accounts.payment.customer_deposit_token_account,
+        ctx.accounts.payment.currency,
+        ctx.accounts.payment.amount,
+        ctx.accounts.payment.delivered,
+        ctx.accounts.payment.cancelled,
+        ctx.accounts.payment.refunded,
     )?;
     Ok(())
 }
@@ -43,7 +43,7 @@ pub struct RefundPurchase<'info> {
         mut, 
         signer,
         constraint = *customer.key == customer_deposit_token_account.owner,
-        constraint = *customer.key == product_escrow.customer
+        constraint = *customer.key == payment.customer
     )]
     pub customer: AccountInfo<'info>,
     #[account(mut)]
@@ -57,14 +57,14 @@ pub struct RefundPurchase<'info> {
     pub customer_deposit_token_account: Account<'info, TokenAccount>,
     #[account(
         mut,
-        constraint = product_escrow.product_id == product_id,
-        constraint = product_escrow.merchant == product.merchant,
-        constraint = product_escrow.currency == product.mint, 
-        constraint = product_escrow.customer == *customer.key,
-        constraint = product_escrow.refunded == false,
-        constraint = product_escrow.cancelled == false,
+        constraint = payment.product_id == product_id,
+        constraint = payment.merchant == product.merchant,
+        constraint = payment.currency == product.mint, 
+        constraint = payment.customer == *customer.key,
+        constraint = payment.refunded == false,
+        constraint = payment.cancelled == false,
     )]
-    pub product_escrow: Box<Account<'info, ProductEscrow>>,
+    pub payment: Box<Account<'info, Payment>>,
     #[account(
         mut,
         seeds = [

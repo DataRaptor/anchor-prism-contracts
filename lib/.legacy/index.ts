@@ -19,7 +19,7 @@ import {
   getInfrastructureAccount,
   getProductAccount,
   getSubscriptionAccount,
-  getProductEscrowAccount,
+  getpaymentAccount,
   getProductVaultAccount,
   getSubscriptionVaultAccount,
 } from "./src/accounts";
@@ -27,7 +27,7 @@ import {
   getInfrastructurePDA,
   getProductPDA,
   getSubscriptionPDA,
-  getProductEscrowPDA,
+  getpaymentPDA,
   getProductVaultPDA,
   getSubscriptionVaultPDA,
 } from "./src/pdas";
@@ -49,13 +49,13 @@ export {
   getInfrastructureAccount,
   getProductAccount,
   getSubscriptionAccount,
-  getProductEscrowAccount,
+  getpaymentAccount,
   getProductVaultAccount,
   getSubscriptionVaultAccount,
   getInfrastructurePDA,
   getProductPDA,
   getSubscriptionPDA,
-  getProductEscrowPDA,
+  getpaymentPDA,
   getProductVaultPDA,
   getSubscriptionVaultPDA,
 };

@@ -1,19 +1,19 @@
 import * as anchor from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 
-const getProductEscrowPDA = async (
+export const getPaymentPDA = async (
   program: any
   // productUuid: string,
 ): Promise<[PublicKey, number]> => {
-  let [productEscrowPDA, productEscrowBump] =
+  let [paymentPDA, paymentBump] =
     await anchor.web3.PublicKey.findProgramAddress(
-      [Buffer.from(anchor.utils.bytes.utf8.encode("product-escrow"))],
+      [Buffer.from(anchor.utils.bytes.utf8.encode("payment"))],
       program.programId
     );
-  return [productEscrowPDA, productEscrowBump];
+  return [paymentPDA, paymentBump];
 };
 
-const getProductPDA = async (
+export const getProductPDA = async (
   program: any,
   productId: number
 ): Promise<[PublicKey, number]> => {
@@ -28,7 +28,7 @@ const getProductPDA = async (
   return [productPDA, productBump];
 };
 
-const getTokenVaultPDA = async (
+export const getTokenVaultPDA = async (
   program: any,
   productId: number,
   orderId: number
@@ -45,4 +45,3 @@ const getTokenVaultPDA = async (
   return [tokenVaultPDA, tokenVaultBump];
 };
 
-export { getProductEscrowPDA, getProductPDA, getTokenVaultPDA };

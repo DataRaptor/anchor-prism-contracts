@@ -10,7 +10,7 @@ export const cancelPurchaseInstruction = async (
   vaultAuthorityPDA: PublicKey,
   customerMainAccount: Keypair,
   customerTokenAccount: PublicKey,
-  productEscrow: PublicKey
+  payment: PublicKey
 ): Promise<string> => {
   const signature: string = await program.rpc.cancelPurchase(
     new anchor.BN(productId),
@@ -21,7 +21,7 @@ export const cancelPurchaseInstruction = async (
         customerDepositTokenAccount: customerTokenAccount,
         vaultAccount: vaultAccountPDA,
         vaultAuthority: vaultAuthorityPDA,
-        productEscrow: productEscrow,
+        payment: payment,
         tokenProgram: TOKEN_PROGRAM_ID,
       },
       signers: [customerMainAccount],
@@ -91,7 +91,7 @@ export const deliverProductInstruction = async (
   merchantMainAccount: Keypair,
   merchantTokenAccount: PublicKey,
   customer: PublicKey,
-  productEscrow: PublicKey
+  payment: PublicKey
 ): Promise<string> => {
   const signature: string = await program.rpc.deliverProduct(
     new anchor.BN(productId),
@@ -101,7 +101,7 @@ export const deliverProductInstruction = async (
         merchant: merchantMainAccount.publicKey,
         merchantReceiveTokenAccount: merchantTokenAccount,
         customer: customer,
-        productEscrow: productEscrow,
+        payment: payment,
         vaultAccount: vaultAccountPDA,
         vaultAuthority: vaultAuthorityPDA,
         tokenProgram: TOKEN_PROGRAM_ID,
@@ -125,7 +125,7 @@ export const purchaseProductInstruction = async (
   customerTokenAccount: PublicKey,
   merchantMainAccount: PublicKey,
   merchantTokenAccount: PublicKey,
-  productEscrow: Keypair
+  payment: Keypair
 ): Promise<string> => {
   const signature: string = await program.rpc.purchaseProduct(
     new anchor.BN(orderId),
@@ -141,15 +141,15 @@ export const purchaseProductInstruction = async (
         customerDepositTokenAccount: customerTokenAccount,
         merchant: merchantMainAccount,
         merchantReceiveTokenAccount: merchantTokenAccount,
-        productEscrow: productEscrow.publicKey,
+        payment: payment.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId,
         rent: anchor.web3.SYSVAR_RENT_PUBKEY,
         tokenProgram: TOKEN_PROGRAM_ID,
       },
       instructions: [
-        await program.account.productEscrow.createInstruction(productEscrow),
+        await program.account.payment.createInstruction(payment),
       ],
-      signers: [productEscrow, customerMainAccount],
+      signers: [payment, customerMainAccount],
     }
   );
   return signature;
@@ -163,7 +163,7 @@ export const refundPurchaseInstruction = async (
   vaultAuthorityPDA: PublicKey,
   customerMainAccount: Keypair,
   customerTokenAccount: PublicKey,
-  productEscrow: Keypair
+  payment: Keypair
 ): Promise<string> => {
   const signature: string = await program.rpc.refundPurchase(
     new anchor.BN(productId),
@@ -174,7 +174,7 @@ export const refundPurchaseInstruction = async (
         customerDepositTokenAccount: customerTokenAccount,
         vaultAccount: vaultAccountPDA,
         vaultAuthority: vaultAuthorityPDA,
-        productEscrow: productEscrow.publicKey,
+        payment: payment.publicKey,
         tokenProgram: TOKEN_PROGRAM_ID,
       },
       signers: [customerMainAccount],

@@ -31,7 +31,7 @@ export type Payments = {
           isSigner: false;
         },
         {
-          name: "productEscrow";
+          name: "payment";
           isMut: true;
           isSigner: false;
         },
@@ -72,7 +72,7 @@ export type Payments = {
           isSigner: false;
         },
         {
-          name: "productEscrow";
+          name: "payment";
           isMut: true;
           isSigner: false;
         },
@@ -232,7 +232,7 @@ export type Payments = {
           isSigner: false;
         },
         {
-          name: "productEscrow";
+          name: "payment";
           isMut: true;
           isSigner: false;
         },
@@ -407,7 +407,7 @@ export type Payments = {
           isSigner: false;
         },
         {
-          name: "productEscrow";
+          name: "payment";
           isMut: true;
           isSigner: false;
         },
@@ -529,7 +529,7 @@ export type Payments = {
           isSigner: false;
         },
         {
-          name: "productEscrow";
+          name: "payment";
           isMut: true;
           isSigner: false;
         },
@@ -685,7 +685,7 @@ export type Payments = {
       };
     },
     {
-      name: "productEscrow";
+      name: "payment";
       type: {
         kind: "struct";
         fields: [
@@ -1112,7 +1112,7 @@ export const IDL: Payments = {
           isSigner: false,
         },
         {
-          name: "productEscrow",
+          name: "payment",
           isMut: true,
           isSigner: false,
         },
@@ -1153,7 +1153,7 @@ export const IDL: Payments = {
           isSigner: false,
         },
         {
-          name: "productEscrow",
+          name: "payment",
           isMut: true,
           isSigner: false,
         },
@@ -1313,7 +1313,7 @@ export const IDL: Payments = {
           isSigner: false,
         },
         {
-          name: "productEscrow",
+          name: "payment",
           isMut: true,
           isSigner: false,
         },
@@ -1488,7 +1488,7 @@ export const IDL: Payments = {
           isSigner: false,
         },
         {
-          name: "productEscrow",
+          name: "payment",
           isMut: true,
           isSigner: false,
         },
@@ -1610,7 +1610,7 @@ export const IDL: Payments = {
           isSigner: false,
         },
         {
-          name: "productEscrow",
+          name: "payment",
           isMut: true,
           isSigner: false,
         },
@@ -1766,7 +1766,7 @@ export const IDL: Payments = {
       },
     },
     {
-      name: "productEscrow",
+      name: "payment",
       type: {
         kind: "struct",
         fields: [

@@ -26,7 +26,7 @@
           "isSigner": false
         },
         {
-          "name": "productEscrow",
+          "name": "payment",
           "isMut": true,
           "isSigner": false
         },
@@ -125,7 +125,7 @@
           "isSigner": false
         },
         {
-          "name": "productEscrow",
+          "name": "payment",
           "isMut": true,
           "isSigner": false
         },
@@ -191,7 +191,7 @@
           "isSigner": false
         },
         {
-          "name": "productEscrow",
+          "name": "payment",
           "isMut": true,
           "isSigner": false
         },
@@ -259,7 +259,7 @@
           "isSigner": false
         },
         {
-          "name": "productEscrow",
+          "name": "payment",
           "isMut": true,
           "isSigner": false
         },
@@ -284,7 +284,7 @@
   ],
   "accounts": [
     {
-      "name": "ProductEscrow",
+      "name": "payment",
       "type": {
         "kind": "struct",
         "fields": [

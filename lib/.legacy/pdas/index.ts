@@ -52,7 +52,7 @@ async function getSubscriptionPDA(
   return subscriptionPDA;
 }
 
-async function getProductEscrowPDA(
+async function getpaymentPDA(
   program: any,
   merchant: any,
   customer: any
@@ -62,9 +62,9 @@ async function getProductEscrowPDA(
     merchant
   );
   let productPDA: PublicKey = await getProductPDA(program, merchant);
-  let [productEscrowPDA, _] = await anchor.web3.PublicKey.findProgramAddress(
+  let [paymentPDA, _] = await anchor.web3.PublicKey.findProgramAddress(
     [
-      anchor.utils.bytes.utf8.encode("product_escrow"),
+      anchor.utils.bytes.utf8.encode("payment"),
       infrastructurePDA.toBuffer(),
       productPDA.toBuffer(),
       merchant.publicKey.toBuffer(),
@@ -72,7 +72,7 @@ async function getProductEscrowPDA(
     ],
     program.programId
   );
-  return productEscrowPDA;
+  return paymentPDA;
 }
 
 async function getProductVaultPDA(
@@ -124,7 +124,7 @@ export {
   getInfrastructurePDA,
   getProductPDA,
   getSubscriptionPDA,
-  getProductEscrowPDA,
+  getpaymentPDA,
   getProductVaultPDA,
   getSubscriptionVaultPDA,
 };

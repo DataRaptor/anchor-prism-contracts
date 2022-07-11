@@ -7,7 +7,7 @@ import {
   refundPurchaseInstruction,
 } from "./instructions";
 
-import { getProductPDA, getProductEscrowPDA, getTokenVaultPDA } from "./pdas";
+import { getProductPDA, getPaymentPDA, getTokenVaultPDA } from "./pdas";
 
 import { generateOrderId, generateProductId } from "./utils";
 
@@ -19,7 +19,7 @@ export {
   purchaseProductInstruction,
   refundPurchaseInstruction,
   getProductPDA,
-  getProductEscrowPDA,
+  getPaymentPDA,
   getTokenVaultPDA,
   generateOrderId,
   generateProductId,

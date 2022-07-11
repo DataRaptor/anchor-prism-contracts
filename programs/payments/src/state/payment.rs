@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 
 #[account]
-pub struct ProductEscrow {
+pub struct Payment {
     pub product_id: u64,
     pub order_id: u64,
     pub merchant: Pubkey,
@@ -15,7 +15,7 @@ pub struct ProductEscrow {
     pub refunded: bool
 }
 
-impl ProductEscrow {
+impl Payment {
 
     pub fn create(
         &mut self,

@@ -6,7 +6,7 @@ import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import {
   getInfrastructurePDA,
   getProductPDA,
-  getProductEscrowPDA,
+  getpaymentPDA,
   getSubscriptionPDA,
   getProductVaultPDA,
 } from "../pdas";
@@ -203,7 +203,7 @@ export const purchaseProductInstruction = async (
   );
   const productPDA: PublicKey = await getProductPDA(program, merchant);
   const productVaultPDA = await getProductVaultPDA(program, merchant, customer);
-  const productEscrowPDA = await getProductEscrowPDA(
+  const paymentPDA = await getpaymentPDA(
     program,
     merchant,
     customer
@@ -215,7 +215,7 @@ export const purchaseProductInstruction = async (
   console.log("currency", currency);
   console.log("customerTokenAccount", customerTokenAccount);
   console.log("merchantTokenAccount", merchantTokenAccount);
-  console.log("productEscrowPDA", productEscrowPDA);
+  console.log("paymentPDA", paymentPDA);
   console.log("vault", productVaultPDA);
   const signature: string = await program.methods
     .purchaseProduct()
@@ -227,7 +227,7 @@ export const purchaseProductInstruction = async (
       currency: currency,
       customerTokenAccount: customerTokenAccount,
       merchantTokenAccount: merchantTokenAccount,
-      productEscrow: productEscrowPDA,
+      payment: paymentPDA,
       vault: productVaultPDA,
       systemProgram: anchor.web3.SystemProgram.programId,
       rent: anchor.web3.SYSVAR_RENT_PUBKEY,

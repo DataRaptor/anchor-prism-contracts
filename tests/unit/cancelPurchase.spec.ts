@@ -14,7 +14,7 @@ import { TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 import { assert, expect } from "chai";
 import {
   getProductPDA,
-  getProductEscrowPDA,
+  getPaymentPDA,
   getTokenVaultPDA,
   cancelPurchaseInstruction,
   createProductInstruction,
@@ -26,9 +26,9 @@ import {
 } from "../../lib";
 import {
   getSolanaEnv,
-  getProductEscrowAccount,
+  getPaymentAccount,
   createTreasury,
-  createProductEscrow,
+  createPayment,
   createUser,
   createCurrency,
   mintCurrencyTo,
@@ -68,13 +68,13 @@ describe("⚛️  Unit: cancelPurchaseInstruction", () => {
     );
 
     // Customer creates a product escrow account and purchases product.
-    const productEscrow: anchor.web3.Keypair = createProductEscrow();
+    const payment: anchor.web3.Keypair = createPayment();
     const [vaultAccountPDA, vaultAccountBump] = await getTokenVaultPDA(
       program,
       productId,
       orderId
     );
-    const [vaultAuthorityPDA, _vaultAuthorityBump] = await getProductEscrowPDA(
+    const [vaultAuthorityPDA, _vaultAuthorityBump] = await getPaymentPDA(
       program
     );
 
@@ -97,7 +97,7 @@ describe("⚛️  Unit: cancelPurchaseInstruction", () => {
       customerUser.tokenAccount,
       merchantUser.keypair.publicKey,
       merchantUser.tokenAccount,
-      productEscrow
+      payment
     );
 
     // Customer cancels the product it just purchased.
@@ -109,7 +109,7 @@ describe("⚛️  Unit: cancelPurchaseInstruction", () => {
       vaultAuthorityPDA,
       customerUser.keypair,
       customerUser.tokenAccount,
-      productEscrow.publicKey
+      payment.publicKey
     );
 
     const merchantTokenAccount = await getTokenAccountInfoFromCurrency(
@@ -130,18 +130,18 @@ describe("⚛️  Unit: cancelPurchaseInstruction", () => {
       "Funds were not returned to the customer."
     );
 
-    const productEscrowAccount = await getProductEscrowAccount(
-      productEscrow.publicKey
+    const paymentAccount = await getPaymentAccount(
+      payment.publicKey
     );
-    expect(productEscrowAccount.delivered).to.eql(
+    expect(paymentAccount.delivered).to.eql(
       false,
       "Delivered should be to true"
     );
-    expect(productEscrowAccount.refunded).to.eql(
+    expect(paymentAccount.refunded).to.eql(
       false,
       "Refunded should be false"
     );
-    expect(productEscrowAccount.cancelled).to.eql(
+    expect(paymentAccount.cancelled).to.eql(
       true,
       "Cancelled should be false"
     );

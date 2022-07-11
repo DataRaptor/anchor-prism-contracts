@@ -23,13 +23,13 @@ export const getProductAccount = async (productPDA: anchor.web3.PublicKey) => {
   return productAccount;
 };
 
-export const getProductEscrowAccount = async (
-  productEscrowPDA: anchor.web3.PublicKey
+export const getPaymentAccount = async (
+  paymentPDA: anchor.web3.PublicKey
 ) => {
-  let productEscrowAccount = await program.account.productEscrow.fetch(
-    productEscrowPDA
+  let paymentAccount = await program.account.payment.fetch(
+    paymentPDA
   );
-  return productEscrowAccount;
+  return paymentAccount;
 };
 
 export const solToLamports = (sol: number): number => {
@@ -120,7 +120,7 @@ export const createTreasury = (): anchor.web3.Keypair => {
   return anchor.web3.Keypair.generate();
 };
 
-export const createProductEscrow = (): anchor.web3.Keypair => {
+export const createPayment = (): anchor.web3.Keypair => {
   return anchor.web3.Keypair.generate();
 };
 

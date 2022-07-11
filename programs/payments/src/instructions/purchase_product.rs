@@ -1,4 +1,4 @@
-use crate::state::product_escrow::*;
+use crate::state::payment::*;
 use crate::state::product::*;
 use anchor_lang::prelude::*;
 use crate::events::purchase_product_event;
@@ -11,7 +11,7 @@ pub fn purchase_product(
     product_id: u64,
     _price: u64,
     _vault_account_bump: u8) -> Result<()> {
-    ctx.accounts.product_escrow.create(
+    ctx.accounts.payment.create(
         product_id,
         order_id,
         ctx.accounts.product.merchant,
@@ -22,7 +22,7 @@ pub fn purchase_product(
         ctx.accounts.product.price,
     )?;
     let (vault_authority, _vault_authority_bump) =
-        Pubkey::find_program_address(&[b"product-escrow"], ctx.program_id);
+        Pubkey::find_program_address(&[b"payment"], ctx.program_id);
     token::set_authority(
         ctx.accounts.into_set_authority_context(),
         AuthorityType::AccountOwner,
@@ -33,17 +33,17 @@ pub fn purchase_product(
         ctx.accounts.product.price,
     )?;
     purchase_product_event::emit(
-        ctx.accounts.product_escrow.product_id,
-        ctx.accounts.product_escrow.order_id,
-        ctx.accounts.product_escrow.merchant,
-        ctx.accounts.product_escrow.merchant_receive_token_account,
-        ctx.accounts.product_escrow.customer,
-        ctx.accounts.product_escrow.customer_deposit_token_account,
-        ctx.accounts.product_escrow.currency,
-        ctx.accounts.product_escrow.amount,
-        ctx.accounts.product_escrow.delivered,
-        ctx.accounts.product_escrow.cancelled,
-        ctx.accounts.product_escrow.refunded,
+        ctx.accounts.payment.product_id,
+        ctx.accounts.payment.order_id,
+        ctx.accounts.payment.merchant,
+        ctx.accounts.payment.merchant_receive_token_account,
+        ctx.accounts.payment.customer,
+        ctx.accounts.payment.customer_deposit_token_account,
+        ctx.accounts.payment.currency,
+        ctx.accounts.payment.amount,
+        ctx.accounts.payment.delivered,
+        ctx.accounts.payment.cancelled,
+        ctx.accounts.payment.refunded,
     )?;
     Ok(())
 }
@@ -89,7 +89,7 @@ pub struct PurchaseProduct<'info> {
     )]
     pub customer_deposit_token_account: Account<'info, TokenAccount>,
     #[account(zero)]
-    pub product_escrow: Box<Account<'info, ProductEscrow>>,
+    pub payment: Box<Account<'info, Payment>>,
     #[account(
         mut,
         seeds = [

@@ -26,12 +26,12 @@ const getSubscriptionAccount = async (
   return subscriptionAccount;
 };
 
-const getProductEscrowAccount = async (
+const getpaymentAccount = async (
   program: any,
   pda: PublicKey
 ): Promise<any> => {
-  let productEscrowAccount = await program.account.productEscrow.fetch(pda);
-  return productEscrowAccount;
+  let paymentAccount = await program.account.payment.fetch(pda);
+  return paymentAccount;
 };
 
 const getProductVaultAccount = async (
@@ -56,7 +56,7 @@ export {
   getInfrastructureAccount,
   getProductAccount,
   getSubscriptionAccount,
-  getProductEscrowAccount,
+  getpaymentAccount,
   getProductVaultAccount,
   getSubscriptionVaultAccount,
 };

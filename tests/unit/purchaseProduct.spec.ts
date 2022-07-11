@@ -14,7 +14,7 @@ import { TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 import { assert, expect } from "chai";
 import {
   getProductPDA,
-  getProductEscrowPDA,
+  getPaymentPDA,
   getTokenVaultPDA,
   cancelPurchaseInstruction,
   createProductInstruction,
@@ -26,9 +26,9 @@ import {
 } from "../../lib";
 import {
   getSolanaEnv,
-  getProductEscrowAccount,
+  getPaymentAccount,
   createTreasury,
-  createProductEscrow,
+  createPayment,
   createUser,
   createCurrency,
   mintCurrencyTo,
@@ -69,13 +69,13 @@ describe("⚛️  Unit: purchaseProductInstruction", () => {
     );
 
     // Customer creates a product escrow account and purchases product.
-    const productEscrow: anchor.web3.Keypair = createProductEscrow();
+    const payment: anchor.web3.Keypair = createPayment();
     const [vaultAccountPDA, vaultAccountBump] = await getTokenVaultPDA(
       program,
       productId,
       orderId
     );
-    const [vaultAuthorityPDA, _vaultAuthorityBump] = await getProductEscrowPDA(
+    const [vaultAuthorityPDA, _vaultAuthorityBump] = await getPaymentPDA(
       program
     );
 
@@ -99,7 +99,7 @@ describe("⚛️  Unit: purchaseProductInstruction", () => {
       customerUser.tokenAccount,
       merchantUser.keypair.publicKey,
       merchantUser.tokenAccount,
-      productEscrow
+      payment
     );
 
     const merchantTokenAccount = await getTokenAccountInfoFromCurrency(
@@ -133,46 +133,46 @@ describe("⚛️  Unit: purchaseProductInstruction", () => {
       "Vault account does not have the correct number of tokens"
     );
 
-    const productEscrowAccount = await getProductEscrowAccount(
-      productEscrow.publicKey
+    const paymentAccount = await getPaymentAccount(
+      payment.publicKey
     );
-    expect(productEscrowAccount.productId.toNumber()).to.eql(
+    expect(paymentAccount.productId.toNumber()).to.eql(
       productId,
       "Mismatched productIds"
     );
-    expect(productEscrowAccount.orderId.toNumber()).to.eql(
+    expect(paymentAccount.orderId.toNumber()).to.eql(
       orderId,
       "Mismatched orderIds"
     );
-    expect(productEscrowAccount.customer.toString()).to.eql(
+    expect(paymentAccount.customer.toString()).to.eql(
       customerUser.keypair.publicKey.toString(),
       "Mismatched customer pubkeys"
     );
-    expect(productEscrowAccount.merchant.toString()).to.eql(
+    expect(paymentAccount.merchant.toString()).to.eql(
       merchantUser.keypair.publicKey.toString(),
       "Mistmatched merchant pubkeys"
     );
-    expect(productEscrowAccount.customerDepositTokenAccount.toString()).to.eql(
+    expect(paymentAccount.customerDepositTokenAccount.toString()).to.eql(
       customerUser.tokenAccount.toString(),
       "Mistmatched customer token accounts"
     );
-    expect(productEscrowAccount.merchantReceiveTokenAccount.toString()).to.eql(
+    expect(paymentAccount.merchantReceiveTokenAccount.toString()).to.eql(
       merchantUser.tokenAccount.toString(),
       "Mistmatched merchant token accounts"
     );
-    expect(productEscrowAccount.amount.toNumber()).to.eql(
+    expect(paymentAccount.amount.toNumber()).to.eql(
       price,
       "Mismatched prices"
     );
-    expect(productEscrowAccount.delivered).to.eql(
+    expect(paymentAccount.delivered).to.eql(
       false,
       "Delivered should initialize to false"
     );
-    expect(productEscrowAccount.refunded).to.eql(
+    expect(paymentAccount.refunded).to.eql(
       false,
       "Refunded should initialize to false"
     );
-    expect(productEscrowAccount.cancelled).to.eql(
+    expect(paymentAccount.cancelled).to.eql(
       false,
       "Cancelled should initialize to false"
     );
@@ -204,13 +204,13 @@ describe("⚛️  Unit: purchaseProductInstruction", () => {
     );
 
     // Customer creates a product escrow account and purchases product.
-    const productEscrow: anchor.web3.Keypair = createProductEscrow();
+    const payment: anchor.web3.Keypair = createPayment();
     const [vaultAccountPDA, vaultAccountBump] = await getTokenVaultPDA(
       program,
       productId,
       orderId
     );
-    const [vaultAuthorityPDA, _vaultAuthorityBump] = await getProductEscrowPDA(
+    const [vaultAuthorityPDA, _vaultAuthorityBump] = await getPaymentPDA(
       program
     );
 
@@ -236,7 +236,7 @@ describe("⚛️  Unit: purchaseProductInstruction", () => {
           customerUser.tokenAccount,
           merchantUser.keypair.publicKey,
           merchantUser.tokenAccount,
-          productEscrow
+          payment
         ),
       null
     );
@@ -268,13 +268,13 @@ describe("⚛️  Unit: purchaseProductInstruction", () => {
     );
 
     // Customer creates a product escrow account and purchases product.
-    const productEscrow: anchor.web3.Keypair = createProductEscrow();
+    const payment: anchor.web3.Keypair = createPayment();
     const [vaultAccountPDA, vaultAccountBump] = await getTokenVaultPDA(
       program,
       productId,
       orderId
     );
-    const [vaultAuthorityPDA, _vaultAuthorityBump] = await getProductEscrowPDA(
+    const [vaultAuthorityPDA, _vaultAuthorityBump] = await getPaymentPDA(
       program
     );
 
@@ -300,7 +300,7 @@ describe("⚛️  Unit: purchaseProductInstruction", () => {
           customerUser.tokenAccount,
           merchantUser.keypair.publicKey,
           merchantUser.tokenAccount,
-          productEscrow
+          payment
         ),
       null
     );
@@ -332,13 +332,13 @@ describe("⚛️  Unit: purchaseProductInstruction", () => {
     );
 
     // Customer creates a product escrow account and purchases product.
-    const productEscrow: anchor.web3.Keypair = createProductEscrow();
+    const payment: anchor.web3.Keypair = createPayment();
     const [vaultAccountPDA, vaultAccountBump] = await getTokenVaultPDA(
       program,
       productId,
       orderId
     );
-    const [vaultAuthorityPDA, _vaultAuthorityBump] = await getProductEscrowPDA(
+    const [vaultAuthorityPDA, _vaultAuthorityBump] = await getPaymentPDA(
       program
     );
 
@@ -365,7 +365,7 @@ describe("⚛️  Unit: purchaseProductInstruction", () => {
           customerUser.tokenAccount,
           merchantUser.keypair.publicKey,
           merchantUser.tokenAccount,
-          productEscrow
+          payment
         ),
       null
     );
@@ -397,13 +397,13 @@ describe("⚛️  Unit: purchaseProductInstruction", () => {
     );
 
     // Customer creates a product escrow account and purchases product.
-    const productEscrow: anchor.web3.Keypair = createProductEscrow();
+    const payment: anchor.web3.Keypair = createPayment();
     const [vaultAccountPDA, vaultAccountBump] = await getTokenVaultPDA(
       program,
       productId,
       orderId
     );
-    const [vaultAuthorityPDA, _vaultAuthorityBump] = await getProductEscrowPDA(
+    const [vaultAuthorityPDA, _vaultAuthorityBump] = await getPaymentPDA(
       program
     );
 
@@ -430,7 +430,7 @@ describe("⚛️  Unit: purchaseProductInstruction", () => {
           customerUser.tokenAccount,
           merchantUser.keypair.publicKey,
           merchantUser.tokenAccount,
-          productEscrow
+          payment
         ),
       null
     );

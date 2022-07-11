@@ -14,7 +14,7 @@ import { TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 import { assert, expect } from "chai";
 import {
   getProductPDA,
-  getProductEscrowPDA,
+  getPaymentPDA,
   getTokenVaultPDA,
   cancelPurchaseInstruction,
   createProductInstruction,
