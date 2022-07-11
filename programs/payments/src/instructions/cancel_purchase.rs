@@ -1,10 +1,10 @@
 use crate::state::product_escrow::*;
 use crate::state::product::*;
+use crate::events::cancel_purchase_event;
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, CloseAccount, TokenAccount, Transfer};
 
 pub fn cancel_purchase(ctx: Context<CancelPurchase>, _product_id: u64) -> Result<()> {
-    // assert_eq!(ctx.accounts.product_escrow.delivered, false);
     let (_vault_authority, vault_authority_bump) =
         Pubkey::find_program_address(&[b"product-escrow"], ctx.program_id);
     let authority_seeds = &[&b"product-escrow"[..], &[vault_authority_bump]];
@@ -20,6 +20,19 @@ pub fn cancel_purchase(ctx: Context<CancelPurchase>, _product_id: u64) -> Result
             .with_signer(&[&authority_seeds[..]]),
     )?;
     ctx.accounts.product_escrow.cancelled = true;
+    cancel_purchase_event::emit(
+        ctx.accounts.product_escrow.product_id,
+        ctx.accounts.product_escrow.order_id,
+        ctx.accounts.product_escrow.merchant,
+        ctx.accounts.product_escrow.merchant_receive_token_account,
+        ctx.accounts.product_escrow.customer,
+        ctx.accounts.product_escrow.customer_deposit_token_account,
+        ctx.accounts.product_escrow.currency,
+        ctx.accounts.product_escrow.amount,
+        ctx.accounts.product_escrow.delivered,
+        ctx.accounts.product_escrow.cancelled,
+        ctx.accounts.product_escrow.refunded,
+    )?;
     Ok(())
 }
 
@@ -34,16 +47,20 @@ pub struct CancelPurchase<'info> {
         constraint = *customer.key == product_escrow.customer, 
     )]
     pub customer: AccountInfo<'info>,
+
     #[account(mut)]
     pub vault_account: Account<'info, TokenAccount>,
+
     /// CHECK: This is not dangerous because we don't read or write from this account
     pub vault_authority: AccountInfo<'info>,
+    
     #[account(
         mut,
         constraint = customer_deposit_token_account.owner == *customer.key,
         constraint = customer_deposit_token_account.owner == product_escrow.customer
     )]
     pub customer_deposit_token_account: Account<'info, TokenAccount>,
+    
     #[account(
         mut,
         constraint = product_escrow.product_id == product_id,
@@ -56,6 +73,7 @@ pub struct CancelPurchase<'info> {
         constraint = product_escrow.refunded == false
     )]
     pub product_escrow: Box<Account<'info, ProductEscrow>>,
+    
     #[account(
         mut,
         seeds = [
@@ -68,6 +86,7 @@ pub struct CancelPurchase<'info> {
         constraint = product.cancellable == true,
     )]
     pub product: Box<Account<'info, Product>>,
+    
     /// CHECK: This is not dangerous because we don't read or write from this account
     pub token_program: AccountInfo<'info>,
 }

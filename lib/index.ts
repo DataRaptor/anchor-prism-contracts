@@ -1,6 +1,7 @@
 import {
   cancelPurchaseInstruction,
   createProductInstruction,
+  deleteProductInstruction,
   deliverProductInstruction,
   purchaseProductInstruction,
   refundPurchaseInstruction,
@@ -13,6 +14,7 @@ import { generateOrderId, generateProductId } from "./utils";
 export {
   cancelPurchaseInstruction,
   createProductInstruction,
+  deleteProductInstruction,
   deliverProductInstruction,
   purchaseProductInstruction,
   refundPurchaseInstruction,

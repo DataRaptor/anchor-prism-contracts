@@ -1,3 +1,3 @@
-pub use pricing::*;
+pub use fees::*;
 
-pub mod pricing;
+pub mod fees;

@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 
 #[event]
-pub struct CreateProductEvent {
+pub struct DeleteProductEvent {
     #[index]
     pub topic: String,
     pub product_id: u64,
@@ -23,16 +23,16 @@ pub fn emit(
     deleted: bool,
     cancellable: bool,
     bump: u8,
-) -> Result<()>{
+) -> Result<()> {
     emit!(
-        CreateProductEvent {
-            topic: "web3.genoa.v1.create_product".to_string(),
+        DeleteProductEvent {
+            topic: "web3.genoa.v1.delete_product".to_string(),
             product_id: product_id,
             currency: currency,
             merchant: merchant,
             merchant_receive_token_account: merchant_receive_token_account,
-            deleted: deleted,
             price: price,
+            deleted: deleted,
             cancellable: cancellable,
             bump: bump
         }

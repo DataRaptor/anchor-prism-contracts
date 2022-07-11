@@ -1,10 +1,8 @@
 use crate::state::product::*;
-use crate::modules::pricing;
+use crate::modules::fees;
+use crate::events::create_product_event;
 use anchor_lang::prelude::*;
-// use anchor_spl::token::{self, Mint, SetAuthority, TokenAccount, Transfer};
-// use solana_sdk::program::invoke;
 use anchor_spl::token::{Mint, TokenAccount};
-// use spl_token::instruction::AuthorityType;
 
 pub fn create_product(
     ctx: Context<CreateProduct>,
@@ -22,7 +20,7 @@ pub fn create_product(
         cancellable,
         bump,
     )?;
-    let fee: u64 = pricing::compute_fee_lamports();
+    let fee: u64 = fees::compute_fee_lamports();
     let fee_instruction = anchor_lang::solana_program::system_instruction::transfer(
         &ctx.accounts.merchant.key(),
         &ctx.accounts.treasury.key(),
@@ -34,6 +32,16 @@ pub fn create_product(
             ctx.accounts.merchant.to_account_info(),
             ctx.accounts.treasury.to_account_info(),
         ],
+    )?;
+    create_product_event::emit(
+        product_id,
+        ctx.accounts.product.mint,
+        ctx.accounts.product.merchant,
+        ctx.accounts.product.merchant_receive_token_account,
+        ctx.accounts.product.price,
+        ctx.accounts.product.deleted,
+        ctx.accounts.product.cancellable,
+        ctx.accounts.product.bump
     )?;
     Ok(())
 }

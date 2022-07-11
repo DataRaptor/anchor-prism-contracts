@@ -1,6 +1,7 @@
 use crate::state::product_escrow::*;
 use crate::state::product::*;
 use anchor_lang::prelude::*;
+use crate::events::purchase_product_event;
 use anchor_spl::token::{self, Mint, SetAuthority, TokenAccount, Transfer};
 use spl_token::instruction::AuthorityType;
 
@@ -30,6 +31,19 @@ pub fn purchase_product(
     token::transfer(
         ctx.accounts.into_transfer_from_customer_to_vault_context(),
         ctx.accounts.product.price,
+    )?;
+    purchase_product_event::emit(
+        ctx.accounts.product_escrow.product_id,
+        ctx.accounts.product_escrow.order_id,
+        ctx.accounts.product_escrow.merchant,
+        ctx.accounts.product_escrow.merchant_receive_token_account,
+        ctx.accounts.product_escrow.customer,
+        ctx.accounts.product_escrow.customer_deposit_token_account,
+        ctx.accounts.product_escrow.currency,
+        ctx.accounts.product_escrow.amount,
+        ctx.accounts.product_escrow.delivered,
+        ctx.accounts.product_escrow.cancelled,
+        ctx.accounts.product_escrow.refunded,
     )?;
     Ok(())
 }
@@ -83,6 +97,7 @@ pub struct PurchaseProduct<'info> {
             product_id.to_string().as_ref(),
         ],
         bump = product.bump,
+        constraint = product.deleted == false,
         constraint = product.price == price,
         constraint = product.mint == mint.key(),
         constraint = product.merchant == *merchant.key,

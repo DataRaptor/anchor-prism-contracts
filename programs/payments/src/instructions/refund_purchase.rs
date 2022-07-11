@@ -1,6 +1,7 @@
 use crate::state::product_escrow::*;
 use crate::state::product::*;
 use anchor_lang::prelude::*;
+use crate::events::refund_purchase_event;
 use anchor_spl::token::{self, CloseAccount, TokenAccount, Transfer};
 
 pub fn refund_purchase(ctx: Context<RefundPurchase>, _product_id: u64) -> Result<()> {
@@ -18,6 +19,19 @@ pub fn refund_purchase(ctx: Context<RefundPurchase>, _product_id: u64) -> Result
             .with_signer(&[&authority_seeds[..]]),
     )?;
     ctx.accounts.product_escrow.refunded = true;
+    refund_purchase_event::emit(
+        ctx.accounts.product_escrow.product_id,
+        ctx.accounts.product_escrow.order_id,
+        ctx.accounts.product_escrow.merchant,
+        ctx.accounts.product_escrow.merchant_receive_token_account,
+        ctx.accounts.product_escrow.customer,
+        ctx.accounts.product_escrow.customer_deposit_token_account,
+        ctx.accounts.product_escrow.currency,
+        ctx.accounts.product_escrow.amount,
+        ctx.accounts.product_escrow.delivered,
+        ctx.accounts.product_escrow.cancelled,
+        ctx.accounts.product_escrow.refunded,
+    )?;
     Ok(())
 }
 
