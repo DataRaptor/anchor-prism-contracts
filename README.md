@@ -5,7 +5,9 @@
 
 ## Overview
 
-Prism provides is a decentralized payments infrastructure. The following repo contains Prism's V1 payments escrow contracts.
+Prism provides is a decentralized payments infrastructure. 
+
+This repo contains Prism's V1 payments escrow contracts.
 
 
 ## Program IDL
